@@ -209,3 +209,6 @@ __marimo__/
 # Ignore all contents of data folders
 data/
 datasets/
+
+# Ignore all notebooks 
+*.ipynb
