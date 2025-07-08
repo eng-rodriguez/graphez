@@ -32,3 +32,13 @@ def load_raw(filepath):
 def save_raw(raw, filepath):
     """Save mne.io.RawArray"""
     raw.save(filepath, overwrite=True)
+
+
+def load_epochs(filepath):
+    """Load mne.Epochs"""
+    return mne.read_epochs(filepath, preload=True)
+
+
+def save_epochs(epochs, filepath):
+    """Save mne.Epochs object to a file"""
+    epochs.save(filepath, overwrite=True)
