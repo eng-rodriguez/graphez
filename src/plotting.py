@@ -63,22 +63,6 @@ def plot_connectivity_matrices_all_bands(con_matrix, ch_names, cmap="Reds", figs
     plt.show()
 
 
-def _calculate_connectivity_threshold(filtered_con, threshold, valid_channels):
-    """Calculate proportional connectivity threshold to keep top X% of connections"""
-    connection_strengths = []
-    for i in range(len(valid_channels)):
-        for j in range(i + 1, len(valid_channels)):
-            # Get all connection strengths from upper triangle
-            connection_strengths.append(abs(filtered_con[i,j]))
-    
-    if connection_strengths:
-        connection_strengths.sort(reverse=True)
-        cutoff_index = min(int(threshold * len(connection_strengths)), len(connection_strengths) - 1)
-        return connection_strengths[cutoff_index]
-    else:
-        return 0
-
-
 def plot_connectivity_map(con_matrix, ch_names, threshold=0.1, cmap="Reds", ax=None, electrode_size=800, arrow_scale=1.0):
     """Plot connectivity topomap with arrows between electrodes."""
     n_channels = len(ch_names)
@@ -301,3 +285,19 @@ def _draw_head(ax, radius=0.5):
     ax.text(0, -label_offset, "Posterior\n(Inion)", ha="center", va="top", fontsize=10, fontweight="bold", alpha=0.8)
     ax.text(-label_offset, 0, 'Left', ha='right', va='center', fontsize=10, fontweight='bold', alpha=0.8)
     ax.text(label_offset, 0, 'Right', ha='left', va='center', fontsize=10, fontweight='bold', alpha=0.8)
+
+
+def _calculate_connectivity_threshold(filtered_con, threshold, valid_channels):
+    """Calculate proportional connectivity threshold to keep top X% of connections"""
+    connection_strengths = []
+    for i in range(len(valid_channels)):
+        for j in range(i + 1, len(valid_channels)):
+            # Get all connection strengths from upper triangle
+            connection_strengths.append(abs(filtered_con[i,j]))
+    
+    if connection_strengths:
+        connection_strengths.sort(reverse=True)
+        cutoff_index = min(int(threshold * len(connection_strengths)), len(connection_strengths) - 1)
+        return connection_strengths[cutoff_index]
+    else:
+        return 0
