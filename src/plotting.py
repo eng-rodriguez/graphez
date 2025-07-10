@@ -3,6 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
+from src.connectivity import calculate_connectivity_threshold
 from matplotlib.patches import Circle, Arc, FancyArrowPatch
 
 
@@ -104,7 +105,7 @@ def plot_connectivity_map(con_matrix, ch_names, threshold=0.1, cmap="Reds", ax=N
     sm.set_array([])
 
     # Calculate threshold
-    proportional_threshold = _calculate_connectivity_threshold(filtered_con, threshold, valid_channels)
+    proportional_threshold = calculate_connectivity_threshold(filtered_con, threshold, valid_channels)
     
     # Draw connectivity arrows
     arrows_drawn = 0
@@ -286,18 +287,3 @@ def _draw_head(ax, radius=0.5):
     ax.text(-label_offset, 0, 'Left', ha='right', va='center', fontsize=10, fontweight='bold', alpha=0.8)
     ax.text(label_offset, 0, 'Right', ha='left', va='center', fontsize=10, fontweight='bold', alpha=0.8)
 
-
-def _calculate_connectivity_threshold(filtered_con, threshold, valid_channels):
-    """Calculate proportional connectivity threshold to keep top X% of connections"""
-    connection_strengths = []
-    for i in range(len(valid_channels)):
-        for j in range(i + 1, len(valid_channels)):
-            # Get all connection strengths from upper triangle
-            connection_strengths.append(abs(filtered_con[i,j]))
-    
-    if connection_strengths:
-        connection_strengths.sort(reverse=True)
-        cutoff_index = min(int(threshold * len(connection_strengths)), len(connection_strengths) - 1)
-        return connection_strengths[cutoff_index]
-    else:
-        return 0

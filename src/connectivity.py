@@ -19,3 +19,19 @@ def functional_connectivity_analysis(epochs, method="coh"):
         }
     
     return connectivity_results
+
+
+def calculate_connectivity_threshold(filtered_con, threshold, valid_channels):
+    """Calculate proportional connectivity threshold to keep top X% of connections"""
+    connection_strengths = []
+    for i in range(len(valid_channels)):
+        for j in range(i + 1, len(valid_channels)):
+            # Get all connection strengths from upper triangle
+            connection_strengths.append(abs(filtered_con[i,j]))
+    
+    if connection_strengths:
+        connection_strengths.sort(reverse=True)
+        cutoff_index = min(int(threshold * len(connection_strengths)), len(connection_strengths) - 1)
+        return connection_strengths[cutoff_index]
+    else:
+        return 0
