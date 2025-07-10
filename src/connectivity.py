@@ -4,13 +4,12 @@ from mne_connectivity import spectral_connectivity_epochs
 
 def functional_connectivity_analysis(epochs, method="coh"):
     """Perform functional connectivity analysis on mne.Epochs"""
-    sfreq = epochs.info["sfreq"]
     freq_bands = {'delta': (1, 4),'theta': (4, 8),'alpha': (8, 13),'beta': (13, 30),'gamma': (30, 100)}
     
     # Compute connectivity
     connectivity_results = {}
     for band_name, (fmin_band, fmax_band) in freq_bands.items():
-        con = spectral_connectivity_epochs(epochs, method=method, sfreq=sfreq, fmin=fmin_band, fmax=fmax_band, faverage=True, mt_adaptive=True)
+        con = spectral_connectivity_epochs(epochs, method=method, fmin=fmin_band, fmax=fmax_band, faverage=True, n_jobs=1)
         
         connectivity_results[band_name] = {
             "connectivity": con.get_data(),
