@@ -21,9 +21,9 @@ def functional_connectivity_analysis(epochs, method="coh"):
     return connectivity_results
 
 
-def prepare_connectivity_matrix(con_matrix, n_channels):
+def prepare_connectivity_matrix(con, n_channels):
     """Prepare connectivity data by ensuring proper 2D shape"""
-    con_matrix = con_matrix.squeeze()
+    con_matrix = con.squeeze()
     if con_matrix.ndim == 1:
         # MNE-connectivity returns lower-triangular connectivity values
         # We need to reconstruct the full symmetric matrix
@@ -42,13 +42,13 @@ def prepare_connectivity_matrix(con_matrix, n_channels):
     return con_matrix
 
 
-def calculate_connectivity_threshold(filtered_con, threshold, valid_channels):
+def calculate_connectivity_threshold(con_matrix, threshold, valid_channels):
     """Calculate proportional connectivity threshold to keep top X% of connections"""
     connection_strengths = []
     for i in range(len(valid_channels)):
         for j in range(i + 1, len(valid_channels)):
             # Get all connection strengths from upper triangle
-            connection_strengths.append(abs(filtered_con[i,j]))
+            connection_strengths.append(abs(con_matrix[i,j]))
     
     if connection_strengths:
         connection_strengths.sort(reverse=True)
