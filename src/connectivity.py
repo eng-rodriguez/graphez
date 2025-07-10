@@ -1,3 +1,4 @@
+import numpy as np
 
 from mne_connectivity import spectral_connectivity_epochs
 
@@ -19,6 +20,27 @@ def functional_connectivity_analysis(epochs, method="coh"):
         }
     
     return connectivity_results
+
+
+def prepare_connectivity_matrix(con_matrix, n_channels):
+    """Prepare connectivity data by ensuring proper 2D shape"""
+    con_matrix = con_matrix.squeeze()
+    if con_matrix.ndim == 1:
+        # MNE-connectivity returns lower-triangular connectivity values
+        # We need to reconstruct the full symmetric matrix
+        full_matrix = np.zeros((n_channels, n_channels))
+        
+        # Fill lower triangle (excluding diagonal)
+        idx = 0
+        for i in range(n_channels):
+            for j in range(i):
+                full_matrix[i, j] = con_matrix[idx]
+                full_matrix[j, i] = con_matrix[idx]  # Make symmetric
+                idx += 1
+        
+        return full_matrix
+    
+    return con_matrix
 
 
 def calculate_connectivity_threshold(filtered_con, threshold, valid_channels):

@@ -3,8 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
-from src.connectivity import calculate_connectivity_threshold
 from matplotlib.patches import Circle, Arc, FancyArrowPatch
+from src.connectivity import calculate_connectivity_threshold, prepare_connectivity_matrix
 
 
 def plot_eegdata(raw, duration=15, scalings=10e-5, time_format="clock"):
@@ -55,7 +55,7 @@ def plot_connectivity_matrices_all_bands(con_matrix, ch_names, cmap="Reds", figs
         if i >= len(axes):
             break
             
-        conn_matrix = _prepare_connectivity_matrix(con_matrix[band], len(ch_names))
+        conn_matrix = prepare_connectivity_matrix(con_matrix[band], len(ch_names))
         _plot_single_connectivity_matrix(conn_matrix, ch_names, band, axes[i], cmap)
     
     _hide_unused_subplots(axes, len(bands))
@@ -67,7 +67,7 @@ def plot_connectivity_matrices_all_bands(con_matrix, ch_names, cmap="Reds", figs
 def plot_connectivity_map(con_matrix, ch_names, threshold=0.1, cmap="Reds", ax=None, electrode_size=800, arrow_scale=1.0):
     """Plot connectivity topomap with arrows between electrodes."""
     n_channels = len(ch_names)
-    con_matrix = _prepare_connectivity_matrix(con_matrix, n_channels)
+    con_matrix = prepare_connectivity_matrix(con_matrix, n_channels)
     
     # Get electrode layout
     layout = _generate_circle_layout()
@@ -146,28 +146,7 @@ def plot_connectivity_map(con_matrix, ch_names, threshold=0.1, cmap="Reds", ax=N
     ax.set_xlim(-0.7, 0.7)              
     ax.set_ylim(-0.7, 0.7)
     
-    return ax        
-
-
-def _prepare_connectivity_matrix(con_matrix, n_channels):
-    """Prepare connectivity data for plotting by ensuring proper 2D shape"""
-    con_matrix = con_matrix.squeeze()
-    if con_matrix.ndim == 1:
-        # MNE-connectivity returns lower-triangular connectivity values
-        # We need to reconstruct the full symmetric matrix
-        full_matrix = np.zeros((n_channels, n_channels))
-        
-        # Fill lower triangle (excluding diagonal)
-        idx = 0
-        for i in range(n_channels):
-            for j in range(i):
-                full_matrix[i, j] = con_matrix[idx]
-                full_matrix[j, i] = con_matrix[idx]  # Make symmetric
-                idx += 1
-        
-        return full_matrix
-    return con_matrix
-
+    return ax
 
 def _plot_single_connectivity_matrix(con_matrix, ch_names, band_name, ax, cmap):
     """Plot a single connectivity matrix on the given axis"""
