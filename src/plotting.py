@@ -22,11 +22,11 @@ def plot_sources(raw, ica):
     ica.plot_sources(raw, show_scrollbars=False)
 
 
-def plot_connectivity_maps_all_bands(con_matrices, ch_names, threshold=0.1, cmap="Reds", figsize=(16, 12)):
+def plot_connectivity_maps_all_bands(con_matrices, ch_names, threshold=0.1, cmap="Reds", figsize=(12, 10)):
     """Plot connectivity maps for all frequency bands in a 2x2 grid"""
     bands = list(con_matrices.keys())
     
-    fig, axes = plt.subplots(2, 2, figsize=figsize)
+    _, axes = plt.subplots(2, 2, figsize=figsize)
     axes = axes.flatten()
     
     for i, band in enumerate(bands):
@@ -34,10 +34,8 @@ def plot_connectivity_maps_all_bands(con_matrices, ch_names, threshold=0.1, cmap
             break
             
         ax = axes[i]
-        plot_connectivity_map(con_matrices[band], ch_names, threshold=threshold, 
-                            cmap=cmap, ax=ax)
-        ax.set_title(f"{band.capitalize()} Band (top {threshold:.0%} connections)", 
-                    pad=10, fontsize=12, fontweight="bold")
+        _plot_connectivity_map(con_matrices[band], ch_names, threshold=threshold, cmap=cmap, ax=ax)
+        ax.set_title(f"{band.capitalize()} Band (top {threshold:.0%} connections)", pad=10, fontsize=12, fontweight="bold")
     
     _hide_unused_subplots(axes, len(bands))
     plt.tight_layout()
@@ -64,7 +62,7 @@ def plot_connectivity_matrices_all_bands(con_matrix, ch_names, cmap="Reds", figs
     plt.show()
 
 
-def plot_connectivity_map(con_matrix, ch_names, threshold=0.1, cmap="Reds", ax=None, electrode_size=800, arrow_scale=1.0):
+def _plot_connectivity_map(con_matrix, ch_names, threshold=0.1, cmap="Reds", ax=None, electrode_size=800):
     """Plot connectivity topomap with arrows between electrodes."""
     n_channels = len(ch_names)
     con_matrix = prepare_connectivity_matrix(con_matrix, n_channels)
@@ -154,6 +152,7 @@ def _plot_single_connectivity_matrix(con_matrix, ch_names, band_name, ax, cmap):
         con_matrix,
         xticklabels=ch_names,
         yticklabels=ch_names,
+        linewidths=0.5,
         cmap=cmap,
         square=True,
         ax=ax,
@@ -161,6 +160,8 @@ def _plot_single_connectivity_matrix(con_matrix, ch_names, band_name, ax, cmap):
     )
     cbar = heatmap.collections[0].colorbar
     cbar.set_label("Connectivity Strength", rotation=270, labelpad=20)
+    ax.patch.set_edgecolor("black")
+    ax.patch.set_linewidth(5)
     ax.set_title(f"{band_name.capitalize()} Band")
 
 
