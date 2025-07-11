@@ -15,7 +15,8 @@ def functional_connectivity_analysis(epochs, method="coh"):
             "connectivity": con.get_data(),
             "freqs": con.freqs,
             "method": method,
-            "n_epochs": con.n_epochs_used
+            "n_epochs": con.n_epochs_used,
+            "ch_names": epochs.ch_names
         }
     
     return connectivity_results
