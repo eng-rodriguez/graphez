@@ -1,4 +1,5 @@
 import mne
+import pickle
 import pandas as pd
 
 from pathlib import Path
@@ -42,3 +43,15 @@ def load_epochs(filepath):
 def save_epochs(epochs, filepath):
     """Save mne.Epochs object to a file"""
     epochs.save(filepath, overwrite=True)
+
+
+def save_data(data, filepath):
+    """Save data to file using pickle."""
+    with open(filepath, 'wb') as f:
+        pickle.dump(data, f)
+
+
+def load_data(filepath):
+    """Load data from file using pickle."""
+    with open(filepath, 'rb') as f:
+        return pickle.load(f)
