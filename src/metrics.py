@@ -60,9 +60,9 @@ def analyze_hemisphere_epileptogenic_zone(con, n_channels, ch_names, metric_func
     metric_values = np.array(metric_values)
     
     # Define hemisphere mapping based on 10-20 system
-    left_hemisphere = ['C3', 'F3', 'F7', 'Fp1', 'P3', 'T3', 'T5']
-    right_hemisphere = ['C4', 'F4', 'F8', 'Fp2', 'P4', 'T4', 'T6']
-    midline = ['Cz', 'Fpz', 'Pz', 'O1', 'O2']  # O1/O2 are bilateral occipital
+    left_hemisphere = ['C3', 'F3', 'F7', 'Fp1', 'P3', 'T3', 'T5', 'O1']
+    right_hemisphere = ['C4', 'F4', 'F8', 'Fp2', 'P4', 'T4', 'T6', 'O2']
+    midline = ['Cz', 'Fpz', 'Pz']
     
     # Group channels by hemisphere
     left_indices = [i for i, ch in enumerate(ch_names) if ch in left_hemisphere]
